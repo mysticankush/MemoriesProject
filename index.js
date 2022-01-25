@@ -20,11 +20,6 @@ app.get("/",(req,res)=>{
 //Memories and Memories123
 //const CONNECTION_URL="mongodb+srv://Memories:Memories123@cluster0.gwhwv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const PORT=process.env.PORT || 5000;
-if(process.env.NODE_ENV=="production")
-{
-    app.use(express.static("client/build"));
-
-}
 mongoose.connect(process.env.CONNECTION_URL ,{
 
 }).then(()=>app.listen(PORT,()=>
