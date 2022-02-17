@@ -2,7 +2,7 @@ import PostMessage from '../models/postMessage.js';
 import mongoose from 'mongoose';
 export const getPosts=async (req,res)=>{
     try{
-        const postMessages=await PostMessage.find();
+        const postMessages=await PostMessage.find();//because it is empty thats why all the post will be seen 
         console.log(postMessages);
         res.status(200).json(postMessages);
     }
@@ -12,19 +12,19 @@ export const getPosts=async (req,res)=>{
     }
 };
 export const createPost=async (req,res)=>{
-    const post=req.body;
-    const newpost=new PostMessage({...post,creator: req.userId,ceatedAt:new Date().toISOString()});
+    const post=req.body;//newpost from client/api/index.js will be used here as req.body
+    const newpost=new PostMessage({...post,creator: req.userId});
     try{
         await newpost.save();
         res.status(201).json(newpost);
     }
     catch(err)
     {
-        res.status(409).json({message:err.message});
+        res.status(404).json({message:err.message});
     }
 }
 export const updatePost=async(req,res)=>{
-    const {id:_id} = req.params;
+    const {id:_id} = req.params;//changing name of id to _id and using _id
     const post=req.body;
     if(!mongoose.Types.ObjectId.isValid(_id)) return res.status(404).send("No post with that id");
     const updatedPost=await PostMessage.findByIdAndUpdate(_id,{...post,_id},{new:true});
@@ -32,18 +32,18 @@ export const updatePost=async(req,res)=>{
 }
 export const deletePost=async(req,res)=>{
     const {id}=req.params;
-    if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send("No post with that id");
+    // console.log(req.params);
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(404).send("No post with that id");
     await PostMessage.findByIdAndRemove(id);
     res.json({message:'Post deleted successfully'});
 }
-
 export const likePost=async (req,res)=>{
-    const {id} =req.params;
+    const {id}=req.params;
     if(!req.userId) return res.json({message:'Unauthenticated'});
     if(!mongoose.Types.ObjectId.isValid(id)) return res.status(400).send("No post with that id");
 
     const post=await PostMessage.findById(id);
-    const index=post.likes.findIndex((id)=>id===String(req.userId));
+    const index=post.likes.findIndex((id)=>id===String(req.userId));//likes vector -> userId's of all the persons who liked . 6 -> 0 1 2 3 4 5
     if(index===-1)
     {
         //like the post

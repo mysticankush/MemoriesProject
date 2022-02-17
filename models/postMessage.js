@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 const postSchema=mongoose.Schema({
     title:String,
+    place:String,
     message:String,
     name:String,
     creator:String,
@@ -9,10 +10,6 @@ const postSchema=mongoose.Schema({
     likes:{
         type:[String],
         default:[]  
-    },
-    createdAt:{
-        type:Date,
-        default:new Date()
     },  
 });
 const PostMessage=mongoose.model('PostMessage',postSchema);
